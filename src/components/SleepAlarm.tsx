@@ -159,7 +159,7 @@ export default function SleepAlarm() {
                             >
                                 ▲
                             </button>
-                            <div className={`text-7xl md:text-9xl font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
+                            <div className={`text-5xl sm:text-7xl md:text-9xl font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
                                 {hours.toString().padStart(2, '0')}
                             </div>
                             <button
@@ -172,7 +172,7 @@ export default function SleepAlarm() {
                         </div>
 
                         {/* Separator */}
-                        <div className={`text-6xl md:text-8xl font-light ${theme.colors.accent} opacity-40 pb-8`}>:</div>
+                        <div className={`text-4xl sm:text-6xl md:text-8xl font-light ${theme.colors.accent} opacity-40 pb-4 sm:pb-8`}>:</div>
 
                         {/* Minutes */}
                         <div className="flex flex-col items-center gap-2">
@@ -182,7 +182,7 @@ export default function SleepAlarm() {
                             >
                                 ▲
                             </button>
-                            <div className={`text-7xl md:text-9xl font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
+                            <div className={`text-5xl sm:text-7xl md:text-9xl font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
                                 {minutes.toString().padStart(2, '0')}
                             </div>
                             <button
@@ -244,7 +244,7 @@ export default function SleepAlarm() {
                     <div
                         className="relative z-50 pointer-events-auto cursor-default"
                     >
-                        <div className={`text-7xl sm:text-8xl md:text-9xl font-digital tracking-tighter tabular-nums transition-all duration-300
+                        <div className={`text-5xl sm:text-7xl md:text-9xl font-digital tracking-tighter tabular-nums transition-all duration-300
               ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105
             `}>
                             {formatTime(timeLeft)}

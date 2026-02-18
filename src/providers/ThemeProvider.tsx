@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { ThemeConfig, THEMES, ThemeMode } from '@/lib/constants';
 
 interface ThemeContextType {
@@ -31,6 +31,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setPrevMode(suggested);
     }, []);
 
+    const fromRemoteRef = useRef(false);
+
     const handleSetMode = (newMode: ThemeMode) => {
         if (newMode === mode) return;
         setPrevMode(mode);
@@ -41,7 +43,30 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             setMode(newMode);
             setTimeout(() => setTransitioning(false), 50);
         }, 300);
+
+        if (!fromRemoteRef.current) {
+            window.dispatchEvent(new CustomEvent('focusroom-local-theme', {
+                detail: { mode: newMode },
+            }));
+        }
     };
+
+    // Listen for remote theme changes
+    useEffect(() => {
+        const handleRemote = (e: Event) => {
+            const detail = (e as CustomEvent).detail;
+            console.log('[ThemeProvider] Remote command:', detail);
+            if (detail.mode) {
+                fromRemoteRef.current = true;
+                handleSetMode(detail.mode);
+                setTimeout(() => { fromRemoteRef.current = false; }, 500);
+            }
+        };
+
+        window.addEventListener('focusroom-remote-theme', handleRemote);
+        return () => window.removeEventListener('focusroom-remote-theme', handleRemote);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mode]);
 
     return (
         <ThemeContext.Provider value={{ mode, setMode: handleSetMode, theme: THEMES[mode] }}>

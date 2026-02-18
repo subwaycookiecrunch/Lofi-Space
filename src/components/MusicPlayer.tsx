@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTheme } from '@/providers/ThemeProvider';
 import { Play, Pause, Volume2, VolumeX, FolderOpen, Radio } from 'lucide-react';
 
@@ -33,6 +33,16 @@ export default function MusicPlayer() {
         }
     };
 
+    const fromRemoteRef = useRef(false);
+
+    // Emit events to FocusRoom for broadcasting
+    const emitMusicEvent = useCallback((action: string) => {
+        if (fromRemoteRef.current) return;
+        window.dispatchEvent(new CustomEvent('focusroom-local-music', {
+            detail: { action },
+        }));
+    }, []);
+
     const togglePlay = () => {
         if (sourceType === 'youtube') {
             isPlaying ? sendCommand('pauseVideo') : sendCommand('playVideo');
@@ -40,7 +50,34 @@ export default function MusicPlayer() {
             isPlaying ? audioRef.current.pause() : audioRef.current.play();
         }
         setIsPlaying(!isPlaying);
+        emitMusicEvent(isPlaying ? 'pause' : 'play');
     };
+
+    // Listen for remote music commands from FocusRoom
+    useEffect(() => {
+        const handleRemote = (e: Event) => {
+            const detail = (e as CustomEvent).detail;
+            console.log('[MusicPlayer] Remote command:', detail);
+            fromRemoteRef.current = true;
+            try {
+                if (detail.action === 'play') {
+                    if (sourceType === 'youtube') sendCommand('playVideo');
+                    else audioRef.current?.play();
+                    setIsPlaying(true);
+                } else if (detail.action === 'pause') {
+                    if (sourceType === 'youtube') sendCommand('pauseVideo');
+                    else audioRef.current?.pause();
+                    setIsPlaying(false);
+                }
+            } finally {
+                setTimeout(() => { fromRemoteRef.current = false; }, 100);
+            }
+        };
+
+        window.addEventListener('focusroom-remote-music', handleRemote);
+        return () => window.removeEventListener('focusroom-remote-music', handleRemote);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sourceType]);
 
     const toggleMute = () => {
         const newMute = !isMuted;
@@ -81,7 +118,7 @@ export default function MusicPlayer() {
 
     return (
         <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 md:bottom-8 md:left-8 md:translate-x-0 z-40
-      backdrop-blur-md border border-white/10 rounded-2xl p-4 w-72 shadow-2xl transition-all duration-500
+      backdrop-blur-md border border-white/10 rounded-2xl p-4 w-72 max-w-[90vw] shadow-2xl transition-all duration-500
       ${theme.colors.glass} ${theme.colors.border}`}
         >
             {/* Hidden Players */}

@@ -183,7 +183,7 @@ export default function ZenSounds() {
 
     return (
         <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 md:bottom-8 md:left-8 md:translate-x-0 z-40
-      backdrop-blur-md border border-white/10 rounded-2xl p-4 w-80 shadow-2xl transition-all duration-500
+      backdrop-blur-md border border-white/10 rounded-2xl p-4 w-80 max-w-[90vw] shadow-2xl transition-all duration-500
       ${theme.colors.glass} ${theme.colors.border}`}
         >
             {/* Header */}

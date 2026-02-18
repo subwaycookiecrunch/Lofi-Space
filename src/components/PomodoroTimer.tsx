@@ -39,7 +39,11 @@ function loadActivePreset(): number {
     } catch { return 0; }
 }
 
-export default function PomodoroTimer() {
+interface PomodoroTimerProps {
+    onTimerChange?: (timeLeft: number, isActive: boolean) => void;
+}
+
+export default function PomodoroTimer({ onTimerChange }: PomodoroTimerProps = {}) {
     const { theme } = useTheme();
     const { completeSession } = useSessionStats();
 
@@ -83,26 +87,85 @@ export default function PomodoroTimer() {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
+    const fromRemoteRef = useRef(false);
+
+    // Emit events to FocusRoom for broadcasting (only for local user actions)
+    const emitTimerEvent = useCallback((action: string, extras?: Record<string, unknown>) => {
+        if (fromRemoteRef.current) return; // Don't re-emit remote actions
+        window.dispatchEvent(new CustomEvent('focusroom-local-timer', {
+            detail: { action, ...extras },
+        }));
+    }, []);
+
     const startTimer = () => {
         if (isActive) return;
         setIsActive(true);
         startTimeRef.current = Date.now();
+        emitTimerEvent('start', { timeLeft, mode });
     };
 
     const pauseTimer = () => {
         setIsActive(false);
+        emitTimerEvent('pause', { timeLeft, mode });
     };
 
     const resetTimer = () => {
         setIsActive(false);
         setTimeLeft(getModeTime(mode));
+        emitTimerEvent('reset', { mode });
     };
 
     const switchMode = (newMode: TimerMode) => {
         setMode(newMode);
         setIsActive(false);
         setTimeLeft(getModeTime(newMode));
+        emitTimerEvent('switchMode', { mode: newMode });
     };
+
+    // ─── Listen for remote timer commands from FocusRoom ───
+    useEffect(() => {
+        const handleRemote = (e: Event) => {
+            const detail = (e as CustomEvent).detail;
+            console.log('[PomodoroTimer] Remote command:', detail);
+            fromRemoteRef.current = true;
+            try {
+                switch (detail.action) {
+                    case 'start':
+                        if (detail.timeLeft != null) setTimeLeft(detail.timeLeft);
+                        if (detail.mode) { setMode(detail.mode); }
+                        setIsActive(true);
+                        startTimeRef.current = Date.now();
+                        break;
+                    case 'pause':
+                        setIsActive(false);
+                        if (detail.timeLeft != null) setTimeLeft(detail.timeLeft);
+                        break;
+                    case 'reset':
+                        setIsActive(false);
+                        if (detail.mode) {
+                            setMode(detail.mode);
+                            setTimeLeft(getModeTime(detail.mode));
+                        } else {
+                            setTimeLeft(getModeTime(mode));
+                        }
+                        break;
+                    case 'switchMode':
+                        if (detail.mode) {
+                            setMode(detail.mode);
+                            setIsActive(false);
+                            setTimeLeft(getModeTime(detail.mode));
+                        }
+                        break;
+                }
+            } finally {
+                // Reset after a tick to allow state updates to settle
+                setTimeout(() => { fromRemoteRef.current = false; }, 100);
+            }
+        };
+
+        window.addEventListener('focusroom-remote-timer', handleRemote);
+        return () => window.removeEventListener('focusroom-remote-timer', handleRemote);
+    }, [mode, getModeTime]);
 
     // Auto-cycle logic
     const handleTimerComplete = useCallback(() => {
@@ -154,6 +217,11 @@ export default function PomodoroTimer() {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };
     }, [isActive, timeLeft, handleTimerComplete]);
+
+    // Notify parent of timer state changes
+    useEffect(() => {
+        onTimerChange?.(timeLeft, isActive);
+    }, [timeLeft, isActive, onTimerChange]);
 
     // Document Title
     useEffect(() => {

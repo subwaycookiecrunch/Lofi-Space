@@ -76,12 +76,38 @@ export default function SpotifyPlayer({ isOpen, onClose }: SpotifyPlayerProps) {
         } catch { }
     }, []);
 
+    const fromRemoteRef = useRef(false);
+
     const selectPlaylist = (id: string, type: string = 'playlist') => {
         setActivePlaylist(id);
         setActiveType(type);
         setShowPicker(false);
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ id, type }));
+
+        if (!fromRemoteRef.current) {
+            window.dispatchEvent(new CustomEvent('focusroom-local-spotify', {
+                detail: { id, type },
+            }));
+        }
     };
+
+    // Listen for remote Spotify changes
+    useEffect(() => {
+        const handleRemote = (e: Event) => {
+            const detail = (e as CustomEvent).detail;
+            console.log('[SpotifyPlayer] Remote command:', detail);
+            fromRemoteRef.current = true;
+            try {
+                selectPlaylist(detail.id, detail.type);
+            } finally {
+                setTimeout(() => { fromRemoteRef.current = false; }, 100);
+            }
+        };
+
+        window.addEventListener('focusroom-remote-spotify', handleRemote);
+        return () => window.removeEventListener('focusroom-remote-spotify', handleRemote);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleCustomUrl = () => {
         const result = extractSpotifyId(customUrl);
@@ -163,10 +189,10 @@ export default function SpotifyPlayer({ isOpen, onClose }: SpotifyPlayerProps) {
                                     onPaste={handlePaste}
                                     placeholder="Paste Spotify link here..."
                                     className={`w-full bg-white/[0.04] border rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-white/20 outline-none transition-colors ${urlStatus === 'error'
-                                            ? 'border-red-500/30 focus:border-red-500/50'
-                                            : urlStatus === 'success'
-                                                ? 'border-green-500/30'
-                                                : 'border-white/[0.06] focus:border-green-500/20'
+                                        ? 'border-red-500/30 focus:border-red-500/50'
+                                        : urlStatus === 'success'
+                                            ? 'border-green-500/30'
+                                            : 'border-white/[0.06] focus:border-green-500/20'
                                         }`}
                                 />
                             </div>

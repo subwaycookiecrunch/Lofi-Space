@@ -43,8 +43,14 @@ export default function Home() {
   // DND / Focus mode
   const [isDND, setIsDND] = useState(false);
 
-  // Timer state for live wallpaper + focus spotlight
+  // Timer state for live wallpaper + focus spotlight + focus room
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  const handleTimerChange = useCallback((timeLeft: number, isActive: boolean) => {
+    setTimerSeconds(timeLeft);
+    setIsTimerActive(isActive);
+  }, []);
 
   // Crossfade
   const prevModeRef = useRef(mode);
@@ -145,7 +151,7 @@ export default function Home() {
       <div className={`z-10 flex flex-col items-center justify-center w-full ${contentMaxWidth} pointer-events-none
         ${isMobile ? 'space-y-3 px-4' : isTablet ? 'space-y-5 px-6' : isTv ? 'space-y-8' : 'space-y-6'}`}>
         <div className={`pointer-events-auto w-full flex justify-center transition-transform duration-500 ${timerScale}`}>
-          {mode === 'study' && <PomodoroTimer />}
+          {mode === 'study' && <PomodoroTimer onTimerChange={handleTimerChange} />}
           {mode === 'sleep' && <SleepAlarm />}
           {mode === 'relax' && <BreathingExercise />}
         </div>
@@ -185,7 +191,7 @@ export default function Home() {
       <TodoList isOpen={showTodo} onClose={() => setShowTodo(false)} />
       <FocusStreaks isOpen={showStreaks} onClose={() => setShowStreaks(false)} />
       <ShareableCard isOpen={showShare} onClose={() => setShowShare(false)} />
-      <FocusRoom isOpen={showRoom} onClose={() => setShowRoom(false)} />
+      <FocusRoom isOpen={showRoom} onClose={() => setShowRoom(false)} timerSeconds={timerSeconds} isTimerActive={isTimerActive} />
       <SpotifyPlayer isOpen={showSpotify} onClose={() => setShowSpotify(false)} />
       <YouTubePlayer isOpen={showYouTube} onClose={() => setShowYouTube(false)} />
       <ThemePicker isOpen={showThemes} onClose={() => setShowThemes(false)} />

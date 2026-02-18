@@ -212,7 +212,7 @@ export default function GenerativeSoundscape() {
     };
 
     return (
-        <div className={`fixed bottom-24 right-4 md:bottom-8 md:right-8 z-40
+        <div className={`fixed top-28 right-4 md:top-auto md:bottom-8 md:right-8 z-40
             backdrop-blur-md border border-white/10 rounded-2xl p-4 w-56 shadow-2xl transition-all duration-500
             ${theme.colors.glass} ${theme.colors.border}`}
         >
