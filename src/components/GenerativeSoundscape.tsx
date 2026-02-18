@@ -3,10 +3,12 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTheme } from '@/providers/ThemeProvider';
+import { useDeviceMode } from '@/providers/DeviceModeProvider';
 
 // Procedurally generated ambient soundscapes — every session sounds different
 export default function GenerativeSoundscape() {
     const { theme, mode } = useTheme();
+    const { device } = useDeviceMode();
     const [isPlaying, setIsPlaying] = useState(false);
     const [intensity, setIntensity] = useState(50);
     const ctxRef = useRef<AudioContext | null>(null);
@@ -211,9 +213,11 @@ export default function GenerativeSoundscape() {
         }
     };
 
+    const isMobile = device === 'mobile';
+
     return (
-        <div className={`fixed top-28 right-4 md:top-auto md:bottom-8 md:right-8 z-40
-            backdrop-blur-md border border-white/10 rounded-2xl p-4 w-56 shadow-2xl transition-all duration-500
+        <div className={`fixed z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 w-56 shadow-2xl transition-all duration-500
+            ${isMobile ? 'top-28 right-4' : 'bottom-8 right-8'}
             ${theme.colors.glass} ${theme.colors.border}`}
         >
             <div className="flex items-center justify-between mb-2">

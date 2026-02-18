@@ -3,10 +3,12 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTheme } from '@/providers/ThemeProvider';
+import { useDeviceMode } from '@/providers/DeviceModeProvider';
 import { Play, Pause, Volume2, VolumeX, FolderOpen, Radio } from 'lucide-react';
 
 export default function MusicPlayer() {
     const { theme } = useTheme();
+    const { device } = useDeviceMode();
     const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
     const [volume, setVolume] = useState(50);
@@ -116,9 +118,11 @@ export default function MusicPlayer() {
         setIsPlaying(false);
     };
 
+    const isMobile = device === 'mobile';
+
     return (
-        <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 md:bottom-8 md:left-8 md:translate-x-0 z-40
-      backdrop-blur-md border border-white/10 rounded-2xl p-4 w-72 max-w-[90vw] shadow-2xl transition-all duration-500
+        <div className={`fixed z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 w-72 max-w-[90vw] shadow-2xl transition-all duration-500
+      ${isMobile ? 'bottom-24 left-1/2 -translate-x-1/2' : 'bottom-8 left-8 translate-x-0'}
       ${theme.colors.glass} ${theme.colors.border}`}
         >
             {/* Hidden Players */}

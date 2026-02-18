@@ -3,6 +3,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTheme } from '@/providers/ThemeProvider';
+import { useDeviceMode } from '@/providers/DeviceModeProvider';
 
 interface ZenSound {
     id: string;
@@ -110,6 +111,7 @@ function createNoiseGenerator(ctx: AudioContext, type: string): { node: AudioNod
 
 export default function ZenSounds() {
     const { theme } = useTheme();
+    const { device } = useDeviceMode();
     const [activeSounds, setActiveSounds] = useState<Set<string>>(new Set());
     const [masterVolume, setMasterVolume] = useState(60);
     const audioCtxRef = useRef<AudioContext | null>(null);
@@ -181,9 +183,11 @@ export default function ZenSounds() {
 
     const isAnyPlaying = activeSounds.size > 0;
 
+    const isMobile = device === 'mobile';
+
     return (
-        <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 md:bottom-8 md:left-8 md:translate-x-0 z-40
-      backdrop-blur-md border border-white/10 rounded-2xl p-4 w-80 max-w-[90vw] shadow-2xl transition-all duration-500
+        <div className={`fixed z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 w-80 max-w-[90vw] shadow-2xl transition-all duration-500
+      ${isMobile ? 'bottom-24 left-1/2 -translate-x-1/2' : 'bottom-8 left-8 translate-x-0'}
       ${theme.colors.glass} ${theme.colors.border}`}
         >
             {/* Header */}
