@@ -43,3 +43,5 @@ next-env.d.ts
 # large files
 *.mov
 debug_output.html
+
+.vercel
