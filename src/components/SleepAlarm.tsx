@@ -128,7 +128,7 @@ export default function SleepAlarm() {
     const isMobile = device === 'mobile';
 
     return (
-        <div className="relative flex flex-col items-center justify-center p-8 z-50 pointer-events-auto select-none">
+        <div className={`relative flex flex-col items-center justify-center z-50 pointer-events-auto select-none ${isMobile ? 'p-4' : 'p-8'}`}>
 
             {/* Ringing State */}
             {isRinging && (
@@ -148,7 +148,7 @@ export default function SleepAlarm() {
 
             {/* Setup State - Time Picker */}
             {!isActive && !isRinging && (
-                <div className="flex flex-col items-center gap-8">
+                <div className={`flex flex-col items-center ${isMobile ? 'gap-4' : 'gap-8'}`}>
                     <div className="text-xs uppercase tracking-[0.4em] text-white/40 mb-2">
                         Sleep Alarm
                     </div>
@@ -163,7 +163,7 @@ export default function SleepAlarm() {
                             >
                                 ▲
                             </button>
-                            <div className={`${isMobile ? "text-5xl sm:text-7xl" : "text-9xl"} font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
+                            <div className={`${isMobile ? "text-4xl" : "text-9xl"} font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
                                 {hours.toString().padStart(2, '0')}
                             </div>
                             <button
@@ -176,7 +176,7 @@ export default function SleepAlarm() {
                         </div>
 
                         {/* Separator */}
-                        <div className={`${isMobile ? "text-4xl sm:text-6xl pb-4" : "text-8xl pb-8"} font-light ${theme.colors.accent} opacity-40`}>:</div>
+                        <div className={`${isMobile ? "text-3xl pb-2" : "text-8xl pb-8"} font-light ${theme.colors.accent} opacity-40`}>:</div>
 
                         {/* Minutes */}
                         <div className="flex flex-col items-center gap-2">
@@ -186,7 +186,7 @@ export default function SleepAlarm() {
                             >
                                 ▲
                             </button>
-                            <div className={`${isMobile ? "text-5xl sm:text-7xl" : "text-9xl"} font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
+                            <div className={`${isMobile ? "text-4xl" : "text-9xl"} font-digital tabular-nums ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]`}>
                                 {minutes.toString().padStart(2, '0')}
                             </div>
                             <button
@@ -200,7 +200,7 @@ export default function SleepAlarm() {
                     </div>
 
                     {/* Quick Presets */}
-                    <div className="flex gap-3 mt-2">
+                    <div className={`flex gap-2 mt-2 flex-wrap justify-center ${isMobile ? 'gap-1.5' : 'gap-3'}`}>
                         {[
                             { h: 0, m: 15, label: '15m' },
                             { h: 0, m: 30, label: '30m' },
@@ -248,7 +248,7 @@ export default function SleepAlarm() {
                     <div
                         className="relative z-50 pointer-events-auto cursor-default"
                     >
-                        <div className={`${isMobile ? "text-5xl sm:text-7xl" : "text-9xl"} font-digital tracking-tighter tabular-nums transition-all duration-300
+                        <div className={`${isMobile ? "text-4xl" : "text-9xl"} font-digital tracking-tighter tabular-nums transition-all duration-300
               ${theme.colors.accent} drop-shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105
             `}>
                             {formatTime(timeLeft)}

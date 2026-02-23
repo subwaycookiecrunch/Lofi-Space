@@ -127,7 +127,8 @@ export default function Home() {
         : '';
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center">
+    <main className={`relative min-h-screen w-full flex flex-col items-center
+      ${isMobile ? 'overflow-y-auto overflow-x-hidden' : 'overflow-hidden justify-center'}`}>
       <Background isTimerActive={isTimerActive} />
       <AmbientLightSync />
       {!isMobile && <CursorTrail />}
@@ -148,17 +149,32 @@ export default function Home() {
       />
 
       {/* Main Content */}
-      <div className={`z-10 flex flex-col items-center justify-center w-full ${contentMaxWidth} pointer-events-none
-        ${isMobile ? 'space-y-3 px-4' : isTablet ? 'space-y-5 px-6' : isTv ? 'space-y-8' : 'space-y-6'}`}>
+      <div className={`z-10 flex flex-col items-center w-full ${contentMaxWidth} pointer-events-none
+        ${isMobile
+          ? 'pt-20 pb-28 space-y-4 px-4 justify-start min-h-screen'
+          : isTablet
+            ? 'space-y-5 px-6 justify-center'
+            : isTv
+              ? 'space-y-8 justify-center'
+              : 'space-y-6 justify-center'
+        }`}>
         <div className={`pointer-events-auto w-full flex justify-center transition-transform duration-500 ${timerScale}`}>
           {mode === 'study' && <PomodoroTimer onTimerChange={handleTimerChange} />}
           {mode === 'sleep' && <SleepAlarm />}
           {mode === 'relax' && <BreathingExercise />}
         </div>
+
+        {/* On mobile, render audio panels inline (in-flow) instead of fixed */}
+        {isMobile && !isDND && (
+          <div className="pointer-events-auto w-full flex flex-col items-center gap-4 px-1">
+            {mode === 'sleep' ? <ZenSounds /> : <MusicPlayer />}
+            <GenerativeSoundscape />
+          </div>
+        )}
       </div>
 
-      {/* Audio Players with crossfade */}
-      {!isDND && (
+      {/* Audio Players — desktop only (fixed positioned) */}
+      {!isMobile && !isDND && (
         <>
           {showPrevAudio && (
             <div className="transition-opacity duration-[1500ms] opacity-0 pointer-events-none">
@@ -169,8 +185,8 @@ export default function Home() {
         </>
       )}
 
-      {/* Generative Soundscape */}
-      {!isDND && <GenerativeSoundscape />}
+      {/* Generative Soundscape — desktop only (fixed positioned) */}
+      {!isMobile && !isDND && <GenerativeSoundscape />}
 
       {/* Toolbar */}
       <Toolbar

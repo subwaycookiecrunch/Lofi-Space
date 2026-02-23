@@ -216,8 +216,8 @@ export default function GenerativeSoundscape() {
     const isMobile = device === 'mobile';
 
     return (
-        <div className={`fixed z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 w-56 shadow-2xl transition-all duration-500
-            ${isMobile ? 'top-28 right-4' : 'bottom-8 right-8'}
+        <div className={`z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-2xl transition-all duration-500
+            ${isMobile ? 'relative w-full max-w-[92vw]' : 'fixed bottom-8 right-8 w-56'}
             ${theme.colors.glass} ${theme.colors.border}`}
         >
             <div className="flex items-center justify-between mb-2">

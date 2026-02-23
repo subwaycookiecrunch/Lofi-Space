@@ -121,8 +121,8 @@ export default function MusicPlayer() {
     const isMobile = device === 'mobile';
 
     return (
-        <div className={`fixed z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 w-72 max-w-[90vw] shadow-2xl transition-all duration-500
-      ${isMobile ? 'bottom-24 left-1/2 -translate-x-1/2' : 'bottom-8 left-8 translate-x-0'}
+        <div className={`z-40 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-2xl transition-all duration-500
+      ${isMobile ? 'relative w-full max-w-[92vw]' : 'fixed bottom-8 left-8 w-72 max-w-[90vw]'}
       ${theme.colors.glass} ${theme.colors.border}`}
         >
             {/* Hidden Players */}

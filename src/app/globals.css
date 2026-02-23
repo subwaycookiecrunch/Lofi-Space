@@ -37,6 +37,15 @@ body {
   /* Prevent scrolling for app-like feel */
 }
 
+/* Allow scrolling on mobile */
+@media (max-width: 639px) {
+  body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Custom Scrollbar for Notes if content overflows */
 textarea::-webkit-scrollbar {
   width: 6px;

@@ -272,7 +272,7 @@ export default function PomodoroTimer({ onTimerChange }: PomodoroTimerProps = {}
                 <div
                     onClick={(e) => { e.stopPropagation(); isActive ? pauseTimer() : startTimer(); }}
                     className="relative z-10 cursor-pointer group
-                        w-64 h-64 md:w-80 md:h-80
+                        w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80
                         flex items-center justify-center
                         rounded-full
                         backdrop-blur-xl bg-white/[0.03] border border-white/10
@@ -282,7 +282,7 @@ export default function PomodoroTimer({ onTimerChange }: PomodoroTimerProps = {}
                 >
                     {/* Timer Display */}
                     <div className="text-center">
-                        <div className={`text-6xl md:text-8xl font-digital tracking-wider tabular-nums transition-all duration-300
+                        <div className={`text-4xl sm:text-6xl md:text-8xl font-digital tracking-wider tabular-nums transition-all duration-300
                             ${theme.colors.accent} drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]
                             ${isActive ? 'scale-105' : 'opacity-90'}`}
                         >
@@ -330,7 +330,7 @@ export default function PomodoroTimer({ onTimerChange }: PomodoroTimerProps = {}
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-4 mt-2 z-50 pointer-events-auto">
+            <div className="flex items-center gap-2 sm:gap-4 mt-2 z-50 pointer-events-auto flex-wrap justify-center">
                 <button
                     onClick={(e) => { e.stopPropagation(); isActive ? pauseTimer() : startTimer(); }}
                     className="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-medium tracking-wide transition-all border border-white/5 shadow-lg active:scale-95"

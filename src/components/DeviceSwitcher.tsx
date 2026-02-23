@@ -14,9 +14,10 @@ const DEVICES: { id: DeviceMode; icon: React.ReactNode; label: string }[] = [
 
 export default function DeviceSwitcher() {
     const { device, setDevice } = useDeviceMode();
+    const isMobile = device === 'mobile';
 
     return (
-        <div className="fixed top-5 right-5 z-50">
+        <div className={`fixed z-50 ${isMobile ? 'top-3 right-3' : 'top-5 right-5'}`}>
             <div
                 className="flex items-center gap-0.5 p-1 rounded-2xl border border-white/[0.08] shadow-lg"
                 style={{
@@ -31,8 +32,8 @@ export default function DeviceSwitcher() {
                             key={d.id}
                             onClick={() => setDevice(d.id)}
                             className={`relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${isActive
-                                    ? 'text-white shadow-md'
-                                    : 'text-white/30 hover:text-white/60'
+                                ? 'text-white shadow-md'
+                                : 'text-white/30 hover:text-white/60'
                                 }`}
                         >
                             {/* Active background pill */}
